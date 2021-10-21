@@ -125,7 +125,7 @@ if __name__ == '__main__':
                         frame = np.array(img_pil)
                         print(frame_count, name)
                         if name not in names_spoken:
-                            # tts_d.speak(f'Здравствуй, {name}')
+                            tts_d.speak(f'Здравствуй, {name}')
                             print(f'Здравствуй, {name}')
                             names_spoken.append(name)
                     else:
