@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 import os
 
 import face_recognition
-import numpy as np
+from speech import speak
+
 
 faces = []
 
@@ -21,42 +22,26 @@ class Face(object):
 
     def see_you(self):
         self._last_seen = datetime.now()
+        print('see:', self.name)
+
+    def hello(self):
+        speak(f'Здравствуй, {self.name}')
+
+    @staticmethod
+    def make_friends(encoding, name):
+        face = Face(encoding, name)
+        # сохраняем кодировку в файл с именем лица
+        with open(os.path.join(enc_path, name), "w") as f:
+            for row in encoding:
+                f.write(str(row))
+                f.write('\n')
+        speak(f'Приятно познакомиться, {name}')
+        face.see_you()
 
     @property
     def recently_seen(self):
         # True если было видимо меньше чем remember_seconds назад
         return (datetime.now() - self._last_seen).seconds < Face.remember_seconds
-
-    def apply_nearest_encoding(self, encoding_batch: list, name: str):
-        # выбрать значение с минимальным средним расстоянием до всех остальных
-
-        row_array = []
-        for row in range(0, len(encoding_batch)):
-            # проходим список
-            cells_array = []
-            for cell in range(0, len(encoding_batch)):
-                # проходим ячейки, индекс которых больше индекса ряда
-                # (чтобы не сравнивать с собой дважды с другими)
-                # находим расстояния между значением ряда и значениями ячеек
-                distance = face_recognition.face_distance(
-                    encoding_batch[row], encoding_batch[cell]
-                )
-                cells_array.append(distance)
-
-            # находим среднее в ряду
-            average = np.mean(cells_array)
-            # print('average', encoding_batch[row], average)
-            # собираем ряд из средних значений
-            row_array.append(average)
-
-        best_match_index = np.argmin(row_array)
-        self.encoding = encoding_batch[best_match_index]
-
-        # сохраняем кодировку в файл с именем лица
-        with open(os.path.join(enc_path, name), "w") as f:
-            for row in self.encoding:
-                f.write(str(row))
-                f.write('\n')
 
     @classmethod
     def by_encoding(cls, encoding):

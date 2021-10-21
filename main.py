@@ -2,7 +2,7 @@ import face_recognition
 import cv2
 
 # import speech
-from utils import read_face_encodings, write_face_encoding
+from utils import read_face_encodings, examine_face
 from faces import Face
 
 
@@ -14,9 +14,9 @@ if __name__ == '__main__':
     process_every_frame = 20
 
     # Получить ссылку на вебкамеру (#0 - камера по умолчанию)
-    # image_source = 0
-    camera_ip = '192.168.1.15'
-    image_source = f'rtsp://{camera_ip}/live/ch00_0'
+    image_source = 0
+    # camera_ip = '192.168.1.15'
+    # image_source = f'rtsp://{camera_ip}/live/ch00_0'
 
     # # Получить поток с IP камеры
     video_capture = cv2.VideoCapture(image_source)
@@ -32,6 +32,7 @@ if __name__ == '__main__':
                 # Уменьшение размеров кадра для более быстрого распознавания (если что)
                 scale = 1
                 small_frame = cv2.resize(frame, (0, 0), fx=scale, fy=scale)
+                height, width = small_frame.shape[:2]
 
                 # Конвертация изображения из цветов BGR (которые испоользует OpenCV)
                 # в цвета RGB (которые использует face_recognition)
@@ -45,13 +46,14 @@ if __name__ == '__main__':
                     person = Face.by_encoding(face_encoding)
 
                     if person:
-                        print('frame ', frame_count, person.name)
                         if not person.recently_seen:
-                            # speech.speak(f'Здравствуй, {person.name}')
-                            print(f'Здравствуй, {person.name}')
-                            person.see_you()
+                            person.hello()
+                        person.see_you()
                     else:
                         print('unknown face')
+                        name = examine_face(height, width, face_locations)
+                        if name:
+                            Face.make_friends(face_encoding, name)
                         # move face location to the center of the frame
                         # ask for name
                         # move face nearest to the center to the center
