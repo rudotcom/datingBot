@@ -13,9 +13,9 @@ if __name__ == '__main__':
     process_every_frame = 20
 
     # Получить ссылку на вебкамеру (#0 - камера по умолчанию)
-    image_source = 0
-    # camera_ip = '192.168.1.15'
-    # image_source = f'rtsp://{camera_ip}/live/ch00_0'
+    # image_source = 0
+    camera_ip = '192.168.1.15'
+    image_source = f'rtsp://{camera_ip}/live/ch00_0'
 
     # # Получить поток с IP камеры
     video_capture = cv2.VideoCapture(image_source)
@@ -54,3 +54,8 @@ if __name__ == '__main__':
                             Face.make_friends(face_encoding, name)
 
             frame_count += 1
+
+    # Release handle to the webcam
+    # tts_d.close()
+    video_capture.release()
+    cv2.destroyAllWindows()
