@@ -10,14 +10,21 @@ enc_path = 'encodings'  # known people encodings to be saved to
 
 
 class Face(object):
+    class_instances = []
+    remember_seconds = 7200
 
     def __init__(self, encoding, name: str):
         self.encoding = encoding
         self.name = name
-        self.last_seen = datetime.datetime.now()
+        self._last_seen = datetime.datetime.now()
+        self.class_instances.append(self)
 
     def see_you(self):
-        self.last_seen = datetime.datetime.now()
+        self._last_seen = datetime.datetime.now()
+
+    def recently_seen(self):
+        # True если было видимо меньше чем remember_seconds назад
+        return (datetime.datetime.now() - self._last_seen).seconds < Face.remember_seconds
 
     def apply_nearest_encoding(self, encoding_batch: list, name: str):
         # выбрать значение с минимальным средним расстоянием до всех остальных
@@ -50,24 +57,18 @@ class Face(object):
                 f.write(str(row))
                 f.write('\n')
 
+    @classmethod
+    def by_encoding(cls, encoding):
+        minimal_distance = 1
+        for person in cls.class_instances:
+            if face_recognition.compare_faces(person.encoding, encoding):
+                return person
 
-def read_face_encodings():
-    for enc_dir in os.listdir(enc_path):
+            # Если совпадение не найдено, смотрим похоже ли лицо на лицо из класса
+            face_distance = face_recognition.face_distance(person.encoding, encoding)
+            if face_distance < minimal_distance:
+                minimal_distance = face_distance
+                closest_face = person
 
-        known_name = os.path.basename(enc_dir)
-        encoding_file = os.path.join(enc_path, known_name)
-
-        if os.path.isfile(encoding_file):
-            face_encoding = np.loadtxt(encoding_file)
-            face = Face(face_encoding, known_name)
-            faces.append(face)
-
-
-def find_name(encoding):
-    for face in faces:
-        face_distance = face_recognition.face_distance(face.encoding, encoding)
-
-        if True in matches:
-            first_match_index = matches.index(True)
-            name = known_face_names[first_match_index]
-            return face.name
+        if minimal_distance < 0.30:
+            return closest_face
