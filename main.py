@@ -1,7 +1,6 @@
 import face_recognition
 import cv2
 
-# import speech
 from utils import read_face_encodings, examine_face
 from faces import Face
 
@@ -50,15 +49,8 @@ if __name__ == '__main__':
                             person.hello()
                         person.see_you()
                     else:
-                        print('unknown face')
                         name = examine_face(height, width, face_locations)
                         if name:
                             Face.make_friends(face_encoding, name)
-                        # move face location to the center of the frame
-                        # ask for name
-                        # move face nearest to the center to the center
-                        # listen for a name
-                        # instantiate a face and write down face parameters
-                        ...
 
             frame_count += 1
