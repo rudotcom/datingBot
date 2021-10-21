@@ -11,8 +11,8 @@ if __name__ == '__main__':
     frame_count = 0
     process_every_frame = 5
 
-    # Получить ссылку на вебкамеру #0 (ту что по умолчанию)
-    # video_capture = cv2.VideoCapture(0)
+    # Получить ссылку на вебкамеру (#0 - камера по умолчанию)
+    # image_source = 0
     camera_ip = '192.168.1.15'
     image_source = f'rtsp://{camera_ip}/live/ch00_0'
 
