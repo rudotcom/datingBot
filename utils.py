@@ -41,7 +41,7 @@ def examine_face(height, width, face_location):
     face_half_height, face_half_width = (bottom - top) // 2, (right - left) // 2
     face_center_y, face_center_x = top + face_half_height, left + face_half_width
     if frame_half_height / 3 > face_half_height:
-        print('Подойди ближе', frame_half_height / 3 / face_half_height)
+        print('Подойди ближе', frame_half_height / 4 / face_half_height)
     else:
         name = input('Как тебя зовут?')
         return name

@@ -50,3 +50,8 @@ if __name__ == '__main__':
                 print(frame_count)
 
             frame_count += 1
+
+    # Release handle to the webcam
+    # tts_d.close()
+    video_capture.release()
+    cv2.destroyAllWindows()
