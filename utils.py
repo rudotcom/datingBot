@@ -1,8 +1,7 @@
 import os
 import numpy as np
 from faces import Face
-
-enc_path = 'encodings'  # Файлы с кодом лиц
+from settings import enc_path
 
 
 def read_face_encodings(path=enc_path):
@@ -24,7 +23,16 @@ def write_face_encoding(name, encoding, path=enc_path):
 
 
 def move_camera(y, x):
-    print('moving x', x, '; y', y)
+    vertical, horizontal = 0, 0
+    if y > 10:
+        vertical = f'^ {y}'
+    elif y < -10:
+        vertical = f'v {y}'
+    if x > 10:
+        horizontal = f'> {x}'
+    elif x < -10:
+        horizontal = f'< {x}'
+    print('move', vertical, horizontal)
 
 
 def examine_face(height, width, face_location):

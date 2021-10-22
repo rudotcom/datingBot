@@ -1,21 +1,15 @@
 import face_recognition
 import cv2
-
 from utils import read_face_encodings, examine_face
 from faces import Face
+from settings import image_source
 
 
 if __name__ == '__main__':
     read_face_encodings()
-    face_locations = []
 
     frame_count = 0
     process_every_frame = 20
-
-    # Получить ссылку на вебкамеру (#0 - камера по умолчанию)
-    image_source = 0
-    # camera_ip = '192.168.1.15'
-    # image_source = f'rtsp://{camera_ip}/live/ch00_0'
 
     # # Получить поток с IP камеры
     video_capture = cv2.VideoCapture(image_source)
@@ -52,5 +46,7 @@ if __name__ == '__main__':
                         name = examine_face(height, width, face_locations)
                         if name:
                             Face.make_friends(face_encoding, name)
+
+                print(frame_count)
 
             frame_count += 1

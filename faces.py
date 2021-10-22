@@ -1,13 +1,9 @@
-from datetime import datetime, timedelta
 import os
-
 import face_recognition
+from datetime import datetime, timedelta
+from settings import enc_path
 from speech import speak
-
-
 faces = []
-
-enc_path = 'encodings'  # known people encodings to be saved to
 
 
 class Face(object):
