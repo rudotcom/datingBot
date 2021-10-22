@@ -1,14 +1,15 @@
 import os
 import face_recognition
 from datetime import datetime, timedelta
-from settings import enc_path
+
+import settings
 from speech import speak
 faces = []
 
 
 class Face(object):
     class_instances = []
-    remember_seconds = 7200
+    remember_seconds = settings.remember_seconds
 
     def __init__(self, encoding, name: str):
         self.encoding = encoding
@@ -27,7 +28,7 @@ class Face(object):
     def make_friends(encoding, name):
         face = Face(encoding, name)
         # сохраняем кодировку в файл с именем лица
-        with open(os.path.join(enc_path, name), "w") as f:
+        with open(os.path.join(settings.enc_path, name), "w") as f:
             for row in encoding:
                 f.write(str(row))
                 f.write('\n')

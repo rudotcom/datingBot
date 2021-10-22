@@ -1,10 +1,10 @@
 import os
 import numpy as np
 from faces import Face
-from settings import enc_path
+import settings
 
 
-def read_face_encodings(path=enc_path):
+def read_face_encodings(path=settings.enc_path):
 
     # Просмотреть все файлы кодов
     for enc_name in os.listdir(path):
@@ -15,7 +15,7 @@ def read_face_encodings(path=enc_path):
     return print('Known faces', len(Face.class_instances))
 
 
-def write_face_encoding(name, encoding, path=enc_path):
+def write_face_encoding(name, encoding, path=settings.enc_path):
     with open(os.path.join(path, name), "w") as f:
         for row in encoding:
             f.write(str(row))
