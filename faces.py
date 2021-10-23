@@ -3,7 +3,7 @@ import face_recognition
 from datetime import datetime, timedelta
 
 import settings
-from speech import speak
+import my_mouth
 faces = []
 
 
@@ -22,7 +22,7 @@ class Face(object):
         print('see:', self.name)
 
     def hello(self):
-        speak(f'Здравствуй, {self.name}')
+        my_mouth.say(f'Здравствуй, {self.name}')
 
     @staticmethod
     def make_friends(encoding, name):
@@ -32,7 +32,7 @@ class Face(object):
             for row in encoding:
                 f.write(str(row))
                 f.write('\n')
-        speak(f'Приятно познакомиться, {name}')
+        my_mouth.say(f'Приятно познакомиться, {name}')
         face.see_you()
 
     @property

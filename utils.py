@@ -2,6 +2,8 @@ import os
 import numpy as np
 from faces import Face
 import settings
+import my_ear
+import my_mouth
 
 
 def read_face_encodings(path=settings.enc_path):
@@ -12,7 +14,7 @@ def read_face_encodings(path=settings.enc_path):
         encoding = np.loadtxt(encoding_file)
         Face(encoding, enc_name)
 
-    return print('Known faces', len(Face.class_instances))
+    return print(f'Я знаю {len(Face.class_instances)} человек')
 
 
 def write_face_encoding(name, encoding, path=settings.enc_path):
@@ -29,9 +31,9 @@ def move_camera(y, x):
     elif y < -10:
         vertical = f'v {y}'
     if x > 10:
-        horizontal = f'> {x}'
+        horizontal = f'--> {x}'
     elif x < -10:
-        horizontal = f'< {x}'
+        horizontal = f'<-- {x}'
     print('move', vertical, horizontal)
 
 
@@ -41,8 +43,11 @@ def examine_face(height, width, face_location):
     face_half_height, face_half_width = (bottom - top) // 2, (right - left) // 2
     face_center_y, face_center_x = top + face_half_height, left + face_half_width
     if frame_half_height / 3 > face_half_height:
-        print('Подойди ближе', frame_half_height / 4 / face_half_height)
+        my_mouth.say('Подойди ближе')
+        print(frame_half_height / 4 / face_half_height)
     else:
-        name = input('Как тебя зовут?')
+        my_mouth.say('Хорошо')
+        my_mouth.say('Как тебя зовут?')
+        name = my_ear.listen()
         return name
     move_camera(frame_half_height - face_center_y, frame_half_width - face_center_x)
