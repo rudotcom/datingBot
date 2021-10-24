@@ -24,6 +24,9 @@ class Face(object):
     def hello(self):
         Avatar.say(f'Здравствуй, {self.name}')
 
+    def save_encoding(self, encoding):
+        face = Face(encoding, 'Незнакомец')
+
     @staticmethod
     def make_friends(encoding, name):
         face = Face(encoding, name)
@@ -72,8 +75,6 @@ class Avatar(object):
 
         shell = f'echo "{text}" | RHVoice-client -s {Avatar.voice} | aplay'
         Avatar.text = None
-        PIPE = subprocess.PIPE
-        process = subprocess.Popen(shell, shell=True, stdout=PIPE)
-        process.communicate()
+        process = subprocess.Popen(shell, shell=True)
 
         Avatar.listening = True

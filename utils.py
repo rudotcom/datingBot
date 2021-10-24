@@ -1,11 +1,11 @@
 import os
 import random
+import time
 
 import numpy as np
 from models import Face, Avatar
 import settings
 import my_ear
-import face_recognition
 
 
 def examine_face(height, width, face_location):
@@ -38,7 +38,7 @@ def read_face_encodings(path=settings.enc_path):
         encoding = np.loadtxt(encoding_file)
         Face(encoding, enc_name)
 
-    return print(f'Я знаю {len(Face.class_instances)} человек')
+    print(f'В памяти {len(Face.class_instances)} человек')
 
 
 def write_face_encoding(name, encoding, path=settings.enc_path):

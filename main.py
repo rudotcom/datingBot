@@ -48,6 +48,7 @@ if __name__ == '__main__':
 
                     # если лицо не знакомо
                     else:
+                        person = Face.save_encoding(face_encoding)
                         height, width = frame.shape[:2]
                         # рассмотреть лицо и спросить имя
                         name = examine_face(height, width, face_locations)
