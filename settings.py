@@ -1,3 +1,4 @@
+import sqlite3
 # ######## PATH ##########
 enc_path = 'encodings'  # Файлы с кодом лиц
 
@@ -15,3 +16,7 @@ remember_seconds = 7200
 PHRASES = {
     'make_friends': ['Меня зовут Мурзилка, а тебя?', 'Как тебя зовут?', 'Давай познакомимся. Меня зовут Мурзилка']
 }
+
+
+conn = sqlite3.connect("faces.sqlite3")  # или :memory: чтобы сохранить в RAM
+cursor = conn.cursor()

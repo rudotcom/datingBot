@@ -1,17 +1,15 @@
-import os
+import pickle
 import face_recognition
 from datetime import datetime, timedelta
 import subprocess
 import settings
-
-faces = []
 
 
 class Face(object):
     class_instances = []
     remember_seconds = settings.remember_seconds
 
-    def __init__(self, encoding, name: str):
+    def __init__(self, name: str, encoding):
         self.encoding = encoding
         self.name = name
         self._last_seen = datetime.now() - timedelta(seconds=Face.remember_seconds)
@@ -24,17 +22,16 @@ class Face(object):
     def hello(self):
         Avatar.say(f'Здравствуй, {self.name}')
 
-    def save_encoding(self, encoding):
-        face = Face(encoding, 'Незнакомец')
-
     @staticmethod
     def make_friends(encoding, name):
-        face = Face(encoding, name)
         # сохраняем кодировку в файл с именем лица
-        with open(os.path.join(settings.enc_path, name), "w") as f:
-            for row in encoding:
-                f.write(str(row))
-                f.write('\n')
+        pickled_encoding = pickle.dumps(encoding)
+        face = Face(name, pickled_encoding)
+
+        # Вставляем данные в таблицу
+        settings.cursor.execute(f"INSERT INTO faces VALUES (?, ?)", (name, pickled_encoding))
+        settings.conn.commit()
+
         Avatar.say(f'Приятно познакомиться, {name}')
         face.see_you()
 

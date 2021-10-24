@@ -48,9 +48,9 @@ if __name__ == '__main__':
 
                     # если лицо не знакомо
                     else:
-                        person = Face.save_encoding(face_encoding)
-                        height, width = frame.shape[:2]
+                        # Сохранить кодировку в объект
                         # рассмотреть лицо и спросить имя
+                        height, width = frame.shape[:2]
                         name = examine_face(height, width, face_locations)
                         if name:
                             Face.make_friends(face_encoding, name)

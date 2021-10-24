@@ -1,11 +1,8 @@
-import os
 import random
-import time
-
-import numpy as np
 from models import Face, Avatar
 import settings
 import my_ear
+import pickle
 
 
 def examine_face(height, width, face_location):
@@ -32,20 +29,12 @@ def examine_face(height, width, face_location):
 
 def read_face_encodings(path=settings.enc_path):
 
-    # Просмотреть все файлы кодов
-    for enc_name in os.listdir(path):
-        encoding_file = os.path.join(path, enc_name)
-        encoding = np.loadtxt(encoding_file)
-        Face(encoding, enc_name)
+    for name, face_stored_pickled_data in settings.cursor.execute("SELECT name, encoding FROM faces"):
+        encoding = pickle.loads(face_stored_pickled_data)
+        Face(name, encoding)
+        print(name, encoding)
 
     print(f'В памяти {len(Face.class_instances)} человек')
-
-
-def write_face_encoding(name, encoding, path=settings.enc_path):
-    with open(os.path.join(path, name), "w") as f:
-        for row in encoding:
-            f.write(str(row))
-            f.write('\n')
 
 
 def move_camera(y, x):
@@ -55,7 +44,7 @@ def move_camera(y, x):
     elif y < -10:
         vertical = f'v {y}'
     if x > 10:
-        horizontal = f'--> {x}'
+        horizontal = f'{x} -->'
     elif x < -10:
         horizontal = f'<-- {x}'
     print('move', vertical, horizontal)
