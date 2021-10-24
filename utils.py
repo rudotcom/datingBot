@@ -5,6 +5,29 @@ import numpy as np
 from models import Face, Avatar
 import settings
 import my_ear
+import face_recognition
+
+
+def examine_face(height, width, face_location):
+    [(top, right, bottom, left)] = face_location
+    frame_half_height, frame_half_width = height // 2, width // 2
+    face_half_height, face_half_width = (bottom - top) // 2, (right - left) // 2
+    face_center_y, face_center_x = top + face_half_height, left + face_half_width
+    move_camera(frame_half_height - face_center_y, frame_half_width - face_center_x)
+
+    if frame_half_height / 3 < face_half_height:
+        # Если высота лица больше 1/3 кадра (достаточно близко)
+        name = None
+        # Давай познакомимся
+        Avatar.say(random.choice(settings.PHRASES['make_friends']))
+
+        while not name:
+            name = my_ear.listen()
+        return name
+
+    else:
+        Avatar.say('Подойди поближе, пожалуйста')
+        print('расстояние:', frame_half_height / 4 / face_half_height)
 
 
 def read_face_encodings(path=settings.enc_path):
@@ -36,18 +59,3 @@ def move_camera(y, x):
     elif x < -10:
         horizontal = f'<-- {x}'
     print('move', vertical, horizontal)
-
-
-def examine_face(height, width, face_location):
-    [(top, right, bottom, left)] = face_location
-    frame_half_height, frame_half_width = height // 2, width // 2
-    face_half_height, face_half_width = (bottom - top) // 2, (right - left) // 2
-    face_center_y, face_center_x = top + face_half_height, left + face_half_width
-    if frame_half_height / 3 > face_half_height:
-        Avatar.say('Подойди ближе')
-        print(frame_half_height / 4 / face_half_height)
-    else:
-        Avatar.say(random.choice(settings.PHRASES['make_friends']))
-        name = my_ear.listen()
-        return name
-    move_camera(frame_half_height - face_center_y, frame_half_width - face_center_x)

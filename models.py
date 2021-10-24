@@ -1,8 +1,9 @@
 import os
 import face_recognition
 from datetime import datetime, timedelta
-
+import subprocess
 import settings
+
 faces = []
 
 
@@ -59,15 +60,20 @@ class Face(object):
 
 class Avatar(object):
     listening = True
-    voice = 'anna'
+    voice = 'Anna+CLB'
 
     def __init__(self):
-        self.speech_rate = 130  # скорость речи 140 самый норм
+        self.speech_rate = 90  # скорость речи
         self.speech_volume = 1  # громкость (0-1)
 
-    @classmethod
-    def say(cls, text):
-        cls.listening = False
-        s = f'echo "{text}" | RHVoice-test -p {cls.voice}'
-        os.system(s)
-        cls.listening = True
+    @staticmethod
+    def say(text):
+        Avatar.listening = False
+
+        shell = f'echo "{text}" | RHVoice-client -s {Avatar.voice} | aplay'
+        Avatar.text = None
+        PIPE = subprocess.PIPE
+        process = subprocess.Popen(shell, shell=True, stdout=PIPE)
+        process.communicate()
+
+        Avatar.listening = True

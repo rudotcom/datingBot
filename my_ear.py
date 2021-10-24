@@ -22,14 +22,12 @@ stream.start_stream()
 
 def listen():
     while Avatar.listening:
+        print('I listen')
         data = stream.read(4000, exception_on_overflow=False)
         if len(data) == 0:
             break
         if rec.AcceptWaveform(data):
             x = json.loads(rec.Result())
-            return (x["text"])
 
-        else:
-            # print(rec.PartialResult())
-            pass
+            return x['text']
 

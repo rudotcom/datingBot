@@ -1,0 +1,56 @@
+=== RHVoice ===
+
+RHVoice — это многоязычный синтезатор речи с открытым исходным кодом, доступный в версиях для операционных систем Windows и Linux.
+Разработчик синтезатора — Ольга Яковлева.
+
+официальные ресурсы проекта:
+   http://tiflo.info/rhvoice/
+   https://github.com/Olga-Yakovleva/RHVoice
+
+==== Установка ====
+сначала нужно подключить этот репозиторий
+
+deb http://ppa.launchpad.net/linvinus/rhvoice/ubuntu focal main 
+deb-src http://ppa.launchpad.net/linvinus/rhvoice/ubuntu focal main 
+
+sudo apt-get update
+
+Программа может работать в двух режимах
+1) Клиент - сервер, связь по протоколу D-BUS
+   sudo apt-get install rhvoice rhvoice-russian
+
+2) Как модуль speech-dispatcher
+   sudo apt-get install speech-dispatcher-rhvoice rhvoice-russian
+
+   sudo apt-get install rhvoice-english если нужен и английский
+
+=== Использование ===
+1) Если вы установили пакет rhvoice то нужно выполнить команду
+echo "Проверка синтезатора речи" | RHVoice-client -s Anna+CLB | aplay
+
+2) Если вы установили пакет speech-dispatcher-rhvoice то нужно выполнить команду
+echo "Проверка синтезатора речи" | spd-say -o rhvoice -l ru -e -t female1
+
+В результате вы должны услышать фразу "Проверка синтезатора речи"
+
+Чтобы записать фразу в файл можно использовать следующую команду
+echo "Проверка синтезатора речи" | RHVoice-client -s Anna+CLB >/tmp/test.wav
+echo "проверка" | RHVoice-client -s Anna+CLB |sox -t wav - -r 8000 -c 1 -b 16 -t wav - >/tmp/test.wav
+
+=== Голоса ===
+Русский
+  aleksandr (муж.)
+  anna (жен.)
+  elena (жен.)
+  irina (жен.)
+
+Английский
+  alan (муж.)
+  clb (жен.)
+  slt (жен.)
+
+Грузинский
+  natia (жен.)
+
+Эсперанто
+  spomenka (жен.)
