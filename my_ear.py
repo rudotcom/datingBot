@@ -20,25 +20,26 @@ stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, fram
 stream.start_stream()
 
 
-def listen_always():
-    while Avatar.listening:
-        print('I listen')
-        data = stream.read(4000, exception_on_overflow=False)
-        if len(data) == 0:
-            break
-        if rec.AcceptWaveform(data):
-            x = json.loads(rec.Result())
-
-            return x['text']
+# def listen_always():
+#     while Avatar.listening:
+#         print('I listen')
+#         data = stream.read(4000, exception_on_overflow=False)
+#         if len(data) == 0:
+#             break
+#         if rec.AcceptWaveform(data):
+#             x = json.loads(rec.Result())
+#
+#             return x['text']
 
 
 def listen():
-    print('I listen now')
-    data = stream.read(4000, exception_on_overflow=False)
-    if len(data) == 0:
-        return False
+    if Avatar.listening:
+        print('I listen now')
+        data = stream.read(4000, exception_on_overflow=False)
+        if len(data) == 0:
+            return False
 
-    if rec.AcceptWaveform(data):
-        x = json.loads(rec.Result())
-        return x['text']
+        if rec.AcceptWaveform(data):
+            x = json.loads(rec.Result())
+            return x['text']
 

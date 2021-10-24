@@ -23,7 +23,7 @@ def examine_face(height, width, face_location):
         return name
 
     else:
-        Avatar.say('Подойди поближе, пожалуйста')
+        Avatar.say(random.choice(settings.PHRASES['come_closer']))
         print('расстояние:', frame_half_height / 4 / face_half_height)
 
 
