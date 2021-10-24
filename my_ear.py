@@ -3,6 +3,8 @@ import os
 import pyaudio
 from vosk import Model, KaldiRecognizer
 
+from models import Avatar
+
 model_name = 'model_small'
 if not os.path.exists(model_name):
     print(
@@ -19,7 +21,7 @@ stream.start_stream()
 
 
 def listen():
-    while True:
+    while Avatar.listening:
         data = stream.read(4000, exception_on_overflow=False)
         if len(data) == 0:
             break

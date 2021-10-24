@@ -1,9 +1,10 @@
 import os
+import random
+
 import numpy as np
-from faces import Face
+from models import Face, Avatar
 import settings
 import my_ear
-import my_mouth
 
 
 def read_face_encodings(path=settings.enc_path):
@@ -43,11 +44,10 @@ def examine_face(height, width, face_location):
     face_half_height, face_half_width = (bottom - top) // 2, (right - left) // 2
     face_center_y, face_center_x = top + face_half_height, left + face_half_width
     if frame_half_height / 3 > face_half_height:
-        my_mouth.say('Подойди ближе')
+        Avatar.say('Подойди ближе')
         print(frame_half_height / 4 / face_half_height)
     else:
-        my_mouth.say('Хорошо')
-        my_mouth.say('Как тебя зовут?')
+        Avatar.say(random.choice(settings.PHRASES['make_friends']))
         name = my_ear.listen()
         return name
     move_camera(frame_half_height - face_center_y, frame_half_width - face_center_x)

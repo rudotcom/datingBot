@@ -10,3 +10,8 @@ image_source = 0
 # image_source = f'rtsp://{camera_ip}/live/ch00_0'
 
 remember_seconds = 7200
+
+
+PHRASES = {
+    'make_friends': ['Меня зовут Мурзилка, а тебя?', 'Как тебя зовут?', 'Давай познакомимся. Меня зовут Мурзилка']
+}

@@ -1,7 +1,7 @@
 import face_recognition
 import cv2
 from utils import read_face_encodings, examine_face
-from faces import Face
+from models import Face
 from settings import image_source
 
 

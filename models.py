@@ -3,7 +3,6 @@ import face_recognition
 from datetime import datetime, timedelta
 
 import settings
-import my_mouth
 faces = []
 
 
@@ -22,7 +21,7 @@ class Face(object):
         print('see:', self.name)
 
     def hello(self):
-        my_mouth.say(f'Здравствуй, {self.name}')
+        Avatar.say(f'Здравствуй, {self.name}')
 
     @staticmethod
     def make_friends(encoding, name):
@@ -32,7 +31,7 @@ class Face(object):
             for row in encoding:
                 f.write(str(row))
                 f.write('\n')
-        my_mouth.say(f'Приятно познакомиться, {name}')
+        Avatar.say(f'Приятно познакомиться, {name}')
         face.see_you()
 
     @property
@@ -57,3 +56,18 @@ class Face(object):
         if minimal_distance < 0.60:
             return closest_face
 
+
+class Avatar(object):
+    listening = True
+    voice = 'anna'
+
+    def __init__(self):
+        self.speech_rate = 130  # скорость речи 140 самый норм
+        self.speech_volume = 1  # громкость (0-1)
+
+    @classmethod
+    def say(cls, text):
+        cls.listening = False
+        s = f'echo "{text}" | RHVoice-test -p {cls.voice}'
+        os.system(s)
+        cls.listening = True
