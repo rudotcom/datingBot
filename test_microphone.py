@@ -25,7 +25,7 @@ stream.start_stream()
 
 if __name__ == '__main__':
     while True:
-        text = my_ear.listen(Avatar.listening)
+        text = my_ear.listen()
         if text:
             if 'аня повтори' in text:
                 text = text.replace('аня повтори', '')

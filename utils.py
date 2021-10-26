@@ -20,6 +20,9 @@ def examine_face(height, width, face_location):
 
         while not name:
             name = my_ear.listen()
+
+        for my_name_is in settings.PHRASES['my_name_is']:
+            name = name.replace(my_name_is, '')
         return name
 
     else:

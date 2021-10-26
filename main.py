@@ -7,7 +7,7 @@ from settings import image_source
 
 
 if __name__ == '__main__':
-    read_face_encodings()
+    # read_face_encodings()
 
     frame_count = 0
     process_every_frame = 20

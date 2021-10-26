@@ -48,6 +48,7 @@ class Face(object):
             #     return person
 
             # Если совпадение не найдено, смотрим похоже ли лицо на лицо из класса
+            print([person.encoding], encoding)
             face_distance = face_recognition.face_distance([person.encoding], encoding)
 
             if face_distance < minimal_distance:
