@@ -23,10 +23,14 @@ p = pyaudio.PyAudio()
 stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8000)
 stream.start_stream()
 
-
-while True:
-    if Avatar.listening:
-        text = my_ear.listen()
+if __name__ == '__main__':
+    while True:
+        text = my_ear.listen(Avatar.listening)
         if text:
+            if 'аня повтори' in text:
+                text = text.replace('аня повтори', '')
+                Avatar.voice = 'Anna+CLB'
+            elif 'александр повтори' in text:
+                text = text.replace('александр повтори', '')
+                Avatar.voice = 'aleksandr'
             Avatar.say(text)
-            text = None

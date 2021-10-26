@@ -3,8 +3,6 @@ import os
 import pyaudio
 from vosk import Model, KaldiRecognizer
 
-from models import Avatar
-
 model_name = 'model_small'
 if not os.path.exists(model_name):
     print(
@@ -17,7 +15,6 @@ rec = KaldiRecognizer(model, 16000)
 
 p = pyaudio.PyAudio()
 stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8000)
-stream.start_stream()
 
 
 # def listen_always():
@@ -32,14 +29,14 @@ stream.start_stream()
 #             return x['text']
 
 
-def listen():
-    if Avatar.listening:
-        print('I listen now')
+def listen(listening):
+    if listening:
+        stream.start_stream()
         data = stream.read(4000, exception_on_overflow=False)
         if len(data) == 0:
             return False
 
-        if rec.AcceptWaveform(data):
-            x = json.loads(rec.Result())
-            return x['text']
-
+        if rec.AcceptWaveform(data) and listening:
+            text = json.loads(rec.Result())['text']
+            stream.stop_stream()
+            return text

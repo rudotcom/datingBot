@@ -58,7 +58,7 @@ class Face(object):
             return closest_face
 
 
-class Avatar(object):
+class Avatar():
     listening = True
     voice = 'Anna+CLB'
 
@@ -71,9 +71,6 @@ class Avatar(object):
         Avatar.listening = False
 
         shell = f'echo "{text}" | RHVoice-client -s {Avatar.voice} | aplay'
-        process = subprocess.Popen(shell, shell=True)
-        process.communicate()
-        shell = f'echo "{text}" | RHVoice-client -s "aleksandr" | aplay'
         process = subprocess.Popen(shell, shell=True)
         process.communicate()
         process.poll()

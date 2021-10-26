@@ -13,6 +13,8 @@ RHVoice — это многоязычный синтезатор речи с о�
 deb http://ppa.launchpad.net/linvinus/rhvoice/ubuntu focal main 
 deb-src http://ppa.launchpad.net/linvinus/rhvoice/ubuntu focal main 
 
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5DB89CF3D275A767
+
 sudo apt-get update
 
 Программа может работать в двух режимах
