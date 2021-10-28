@@ -4,9 +4,7 @@ import os
 import pyaudio
 from vosk import Model, KaldiRecognizer
 
-import my_ear
 from models import Avatar
-
 
 model_name = 'model_small'
 if not os.path.exists(model_name):
@@ -23,9 +21,10 @@ p = pyaudio.PyAudio()
 stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8000)
 stream.start_stream()
 
+
 if __name__ == '__main__':
     while True:
-        text = my_ear.listen()
+        text = Avatar.listen()
         if text:
             if 'аня повтори' in text:
                 text = text.replace('аня повтори', '')
@@ -33,4 +32,5 @@ if __name__ == '__main__':
             elif 'александр повтори' in text:
                 text = text.replace('александр повтори', '')
                 Avatar.voice = 'aleksandr'
+
             Avatar.say(text)

@@ -1,7 +1,7 @@
 import random
 from models import Face, Avatar
 import settings
-import my_ear
+import voice_model
 import pickle
 
 
@@ -13,13 +13,13 @@ def examine_face(height, width, face_location):
     move_camera(frame_half_height - face_center_y, frame_half_width - face_center_x)
 
     if frame_half_height / 3 < face_half_height:
-        # Если высота лица больше 1/3 кадра (достаточно близко)
+        # Если высота лица больше 1/3 высоты кадра (лицо достаточно близко)
         name = None
         # Давай познакомимся
         Avatar.say(random.choice(settings.PHRASES['make_friends']))
 
         while not name:
-            name = my_ear.listen()
+            name = Avatar.listen()
 
         for my_name_is in settings.PHRASES['my_name_is']:
             name = name.replace(my_name_is, '')
@@ -30,12 +30,11 @@ def examine_face(height, width, face_location):
         print('расстояние:', frame_half_height / 4 / face_half_height)
 
 
-def read_face_encodings(path=settings.enc_path):
+def read_face_encodings():
 
     for name, face_stored_pickled_data in settings.cursor.execute("SELECT name, encoding FROM faces"):
         encoding = pickle.loads(face_stored_pickled_data)
         Face(name, encoding)
-        print(name, encoding)
 
     print(f'В памяти {len(Face.class_instances)} человек')
 

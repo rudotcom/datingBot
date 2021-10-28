@@ -2,12 +2,12 @@ import cv2
 import face_recognition
 
 from utils import read_face_encodings, examine_face
-from models import Avatar, Face
+from models import Face
 from settings import image_source
 
 
 if __name__ == '__main__':
-    # read_face_encodings()
+    read_face_encodings()
 
     frame_count = 0
     process_every_frame = 20
@@ -23,7 +23,7 @@ if __name__ == '__main__':
         if ret:
 
             # Пропускаем по несколько кадров для ускорения процесса
-            if frame_count % process_every_frame == 0 and Avatar.listening:
+            if frame_count % process_every_frame == 0:
 
                 # Конвертация изображения из цветов BGR (которые испоользует OpenCV)
                 # в цвета RGB (которые использует face_recognition)

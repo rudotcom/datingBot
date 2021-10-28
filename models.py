@@ -1,8 +1,10 @@
+import json
 import pickle
 import face_recognition
 from datetime import datetime, timedelta
 import subprocess
 import settings
+from voice_model import stream, recognizer
 
 
 class Face(object):
@@ -25,9 +27,10 @@ class Face(object):
     @staticmethod
     def make_friends(encoding, name):
         # сохраняем кодировку в файл с именем лица
-        pickled_encoding = pickle.dumps(encoding)
-        face = Face(name, pickled_encoding)
+        face = Face(name, encoding)
 
+        # переводим ndarray в формат для базы данных
+        pickled_encoding = pickle.dumps(encoding)
         # Вставляем данные в таблицу
         settings.cursor.execute(f"INSERT INTO faces VALUES (?, ?)", (name, pickled_encoding))
         settings.conn.commit()
@@ -48,7 +51,6 @@ class Face(object):
             #     return person
 
             # Если совпадение не найдено, смотрим похоже ли лицо на лицо из класса
-            print([person.encoding], encoding)
             face_distance = face_recognition.face_distance([person.encoding], encoding)
 
             if face_distance < minimal_distance:
@@ -59,8 +61,7 @@ class Face(object):
             return closest_face
 
 
-class Avatar():
-    listening = True
+class Avatar:
     voice = 'Anna+CLB'
 
     def __init__(self):
@@ -69,11 +70,22 @@ class Avatar():
 
     @staticmethod
     def say(text):
-        Avatar.listening = False
-
+        stream.stop_stream()
         shell = f'echo "{text}" | RHVoice-client -s {Avatar.voice} | aplay'
         process = subprocess.Popen(shell, shell=True)
         process.communicate()
         process.poll()
+        stream.start_stream()
 
-        Avatar.listening = True
+    @staticmethod
+    def listen():
+        stream.start_stream()
+        data = stream.read(4000, exception_on_overflow=False)
+        if len(data) == 0:
+            return False
+
+        if recognizer.AcceptWaveform(data):
+            text = json.loads(recognizer.Result())['text']
+            stream.stop_stream()
+            return text
+
