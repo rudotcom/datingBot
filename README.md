@@ -12,4 +12,8 @@ cursor = conn.cursor()
 cursor.execute("""CREATE TABLE faces
                   (name text, encoding BLOB)
                """)
+ ###############################
+cursor.execute("""DELETE FROM faces
+                  WHERE name='да';
+               """)
  

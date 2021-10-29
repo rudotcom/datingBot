@@ -1,4 +1,3 @@
-import json
 import os
 import pyaudio
 from vosk import Model, KaldiRecognizer
