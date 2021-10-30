@@ -1,5 +1,7 @@
 import json
 import pickle
+import random
+
 import face_recognition
 from datetime import datetime, timedelta
 import subprocess
@@ -72,6 +74,7 @@ class Avatar:
     def say(text):
         stream.stop_stream()
         shell = f'echo "{text}" | RHVoice-client -s {Avatar.voice} | aplay'
+        print(f'--> {text}')
         process = subprocess.Popen(shell, shell=True)
         process.communicate()
         process.poll()
@@ -87,5 +90,12 @@ class Avatar:
         if recognizer.AcceptWaveform(data):
             text = json.loads(recognizer.Result())['text']
             stream.stop_stream()
+            print(f'<-- {text}')
             return text
+
+    @staticmethod
+    def confirm(self, copy_that):
+        if copy_that in random.choice(settings.PHRASES['positive'] + ['моё']):
+            return True
+
 
