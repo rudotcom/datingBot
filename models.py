@@ -12,6 +12,8 @@ from voice_model import stream, recognizer
 class Face(object):
     class_instances = []
     remember_seconds = settings.remember_seconds
+    selected = None
+    height_of_selected = 0
 
     def __init__(self, name: str, encoding):
         self.encoding = encoding
@@ -24,7 +26,7 @@ class Face(object):
         print('see:', self.name)
 
     def hello(self):
-        Avatar.say(f'Здравствуй, {self.name}')
+        Avatar.say(f'{random.choice(settings.PHRASES["hello"])}, {self.name}')
 
     @staticmethod
     def make_friends(encoding, name):
@@ -82,19 +84,21 @@ class Avatar:
 
     @staticmethod
     def listen():
-        stream.start_stream()
-        data = stream.read(4000, exception_on_overflow=False)
-        if len(data) == 0:
-            return False
+        text = None
+        while not text:
+            stream.start_stream()
+            data = stream.read(4000, exception_on_overflow=False)
+            if len(data) == 0:
+                return False
 
-        if recognizer.AcceptWaveform(data):
-            text = json.loads(recognizer.Result())['text']
-            stream.stop_stream()
-            print(f'<-- {text}')
-            return text
+            if recognizer.AcceptWaveform(data):
+                text = json.loads(recognizer.Result())['text']
+                stream.stop_stream()
+                print(f'<-- {text}')
+                return text
 
     @staticmethod
-    def confirm(self, copy_that):
+    def confirm(copy_that):
         if copy_that in random.choice(settings.PHRASES['positive'] + ['моё']):
             return True
 

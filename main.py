@@ -1,5 +1,7 @@
 import cv2
 import face_recognition
+import numpy as np
+from PIL import Image
 
 from utils import read_face_encodings, take_a_close_look, distance_to_center, move_selected_face_to_center, \
     is_face_close, ask_name
@@ -16,10 +18,10 @@ if __name__ == '__main__':
     video_capture = cv2.VideoCapture(image_source)
 
     while video_capture.isOpened():
-        selected_face_encoding = None
         person = None
         # Захват единичного кадра видео
         ret, frame = video_capture.read()
+        # img_pil = Image.fromarray(frame)
 
         if ret:
 
@@ -38,13 +40,18 @@ if __name__ == '__main__':
 
                 for face in range(len(face_locations)):
                     # если есть кандидат в знакомые, найти на текущем кадре
-                    if selected_face_encoding:
-                        selected_face_encoding = take_a_close_look(face_encodings, selected_face_encoding)
-                        selected_face_location = face_locations[face]
+                    if Face.selected is not None:
+                        Face.selected = take_a_close_look(face_encodings, Face.selected)
+                        selected_face_location = tuple(face_locations[face])
+                        print(selected_face_location)
                         frame_half_height, face_half_height = move_selected_face_to_center(
                             height, width, selected_face_location)
 
-                        is_face_close(frame_half_height, face_half_height)
+                        if is_face_close(frame_half_height, face_half_height):
+                            # если лицо кандидата достаточно близко
+                            name = ask_name()
+                            if name:
+                                Face.make_friends(Face.selected, name)
 
                     # для каждого номера лица определяем знакомо ли лицо
                     person = Face.by_encoding(face_encodings[face])
@@ -61,24 +68,29 @@ if __name__ == '__main__':
                     # если есть незнакомые лица
                     else:
                         # если лицо не выбрано из незнакомых
-                        if not selected_face_encoding:
+                        if Face.selected is not False:
                             height, width = frame.shape[:2]
                             # узнать расстояние лица до центра
                             distance = distance_to_center(height, width, face_locations[face])
                             # добавляем в список незнакомых лиц с параметром [0] = расстояние
                             face_distances.append((distance, face_locations[face], face_encodings[face]))
 
-                        else:  # если неизвестное лицо таки найдено
-                            name = ask_name()
-                            if name:
-                                Face.make_friends(selected_face_encoding, name)
-
                 if face_distances:
+                    print('неизвестных', len(face_distances))
                     # выбираем лицо с минимальным расстоянием до центра
                     # Запомнить encoding ближайшего кандидата
-                    selected_face_encoding = min(face_distances, key=lambda x: x[0])[2]
+                    Face.selected = min(face_distances, key=lambda x: x[0])[2]
 
                 print(frame_count)
+                # frame = np.array(img_pil)
 
             frame_count += 1
+            # Hit 'q' on the keyboard to quit!
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
+            cv2.imshow('What I see', frame)
+
+# Release handle to the webcam
+    video_capture.release()
+    cv2.destroyAllWindows()

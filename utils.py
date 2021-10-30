@@ -10,8 +10,7 @@ from math import sqrt
 
 
 def distance_to_center(height, width, face_location):
-    print('location:', face_location)
-    [(top, right, bottom, left)] = face_location
+    (top, right, bottom, left) = tuple(face_location)
     frame_half_height, frame_half_width = height // 2, width // 2
     face_half_height, face_half_width = (bottom - top) // 2, (right - left) // 2
     # расстояние от центра лица до центра кадра
@@ -34,8 +33,7 @@ def take_a_close_look(face_encodings, selected_face_encoding):
 
 
 def move_selected_face_to_center(height, width, face_location):
-    print('location:', face_location)
-    [(top, right, bottom, left)] = face_location
+    top, right, bottom, left = face_location
     frame_half_height, frame_half_width = height // 2, width // 2
     face_half_height = (bottom - top) // 2
     face_center_y = top + face_half_height
@@ -44,29 +42,43 @@ def move_selected_face_to_center(height, width, face_location):
     return frame_half_height, face_half_height
 
 
-def is_face_close(frame_half_height, face_half_height):
+def is_face_close(frame_half_height, face_half_height_now):
+    # эталонный размер лица = 1/3 размера кадра
+    reference = frame_half_height / 3
+
     # Если высота лица больше 1/3 высоты кадра (лицо достаточно близко)
-    if frame_half_height / 3 < face_half_height:
-        Avatar.say(random.choice(settings.PHRASES['come_closer']))
-        print('расстояние:', frame_half_height / 4 / face_half_height)
+    print('enough size?:', face_half_height_now / reference)
+    print('prev/now (loom):', Face.height_of_selected / face_half_height_now)
+
+    if face_half_height_now < reference:
+        loom = Face.height_of_selected / face_half_height_now
+        if loom >= 1.2 or loom < 1:
+            # если лицо увеличилось на 1.2
+            Avatar.say(random.choice(settings.PHRASES['come_closer']))
+            Face.height_of_selected = face_half_height_now
+
+    else:
+        return True
 
 
 def ask_name():
+    name = None
     # Давай познакомимся
     Avatar.say(random.choice(settings.PHRASES['make_friends']))
 
     name = Avatar.listen()
 
-    for my_name_is in settings.PHRASES['my_name_is']:
-        name = name.replace(my_name_is, '')
+    if name:
+        for my_name_is in settings.PHRASES['my_name_is']:
+            name = name.replace(my_name_is, '')
 
-    # тебя зовут ..., правильно?
-    Avatar.say(random.choice(settings.PHRASES['your_name_is']))
-    Avatar.say(name)
-    Avatar.say(random.choice(settings.PHRASES['is_your_name']))
-    # если ответ положительный
-    if Avatar.confirm(Avatar.listen()):
-        return name
+        # тебя зовут ..., правильно?
+        Avatar.say(random.choice(settings.PHRASES['your_name_is']))
+        Avatar.say(name)
+        Avatar.say(random.choice(settings.PHRASES['is_your_name']))
+        # если ответ положительный
+        if Avatar.confirm(Avatar.listen()):
+            return name
 
 
 def read_face_encodings():
