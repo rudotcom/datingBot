@@ -23,7 +23,7 @@ if __name__ == '__main__':
         ret, frame = video_capture.read()
         # img_pil = Image.fromarray(frame)
 
-        if ret:
+        if ret:  # True = кадр доступен
 
             # Пропускаем по несколько кадров для ускорения процесса
             if frame_count % process_every_frame == 0:
